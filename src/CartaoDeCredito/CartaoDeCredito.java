@@ -6,59 +6,54 @@ public class CartaoDeCredito {
     private String cpfTitular;
     private float limite;
     private float saldo;
+    private float taxaCashback;
 
-    public CartaoDeCredito(String numero, String nomeTitular, String cpfTitular, float limite) {
+    public CartaoDeCredito(String numero, String nomeTitular) {
+        this.numero = numero;
+        this.nomeTitular = nomeTitular;
+        this.limite = 1000;
+        this.saldo = 0;
+        this.taxaCashback = 0;
+    }
+
+    public CartaoDeCredito(String numero, String nomeTitular, String cpfTitular, float limite, float taxaCashback) {
         this.numero = numero;
         this.nomeTitular = nomeTitular;
         this.cpfTitular = cpfTitular;
         this.limite = limite;
         this.saldo = 0;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public String getNomeTitular() {
-        return nomeTitular;
-    }
-
-    public String getCpfTitular() {
-        return cpfTitular;
-    }
-
-    public float getLimite() {
-        return limite;
-    }
-
-    public float getSaldo() {
-        return saldo;
-    }
-
-    public void setLimite(float limite) {
-        this.limite = limite;
+        this.taxaCashback = taxaCashback;
     }
 
     public float consultarLimite() {
-        return getLimite();
+        return limite;
     }
 
     public float consultarSaldo() {
-        return getSaldo();
+        return saldo;
     }
 
     public void realizarTransacao(float valor) {
-        if (valor <= getLimite()) {
-            setLimite(getLimite() - valor);
+        if (valor <= limite - saldo) {
             saldo += valor;
             System.out.println("Transação realizada com sucesso: " + valor);
         } else {
-            System.out.println("Você não possui saldo suficiente");
+            System.out.println("Você não possui saldo suficiente. Saldo atual: " + saldo);
         }
     }
 
-    public void alterarLimite(float novoLimite) {
-        setLimite(novoLimite);
-        System.out.println("Limite alterado para: " + novoLimite);
+    public void realizarTransacao(float valor, boolean comCashback) {
+        if (valor <= limite - saldo) {
+            saldo += valor;
+            if (comCashback) {
+                float cashback = valor * taxaCashback;
+                saldo -= cashback;
+                System.out.println("Transação realizada com sucesso: " + valor + ". Cashback aplicado: " + cashback);
+            } else {
+                System.out.println("Transação realizada com sucesso: " + valor);
+            }
+        } else {
+            System.out.println("Você não possui saldo suficiente. Saldo atual: " + saldo);
+        }
     }
 }
